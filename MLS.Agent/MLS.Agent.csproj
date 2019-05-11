@@ -127,7 +127,6 @@
     <EmbeddedResource Include="..\MLS.PackageTool\MLS.PackageTool.csproj" />
     <EmbeddedResource Include="..\MLS.PackageTool\Program.cs" />
     <EmbeddedResource Include="$(OutputPath)/demo.zip">
-    
       <LogicalName>demo.zip</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
@@ -153,7 +152,7 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CopyTemplateFiles">
+  <Target Name="CopyDemoFiles" BeforeTargets="ZipDemo;PrepareForBuild">
     <ItemGroup>
       <DemoFiles Include="$(MSBuildProjectDirectory)/../docs/GettingStarted/**/*.cs;$(MSBuildProjectDirectory)/../docs/GettingStarted/**/*.md;$(MSBuildProjectDirectory)/../docs/GettingStarted/**/*.csproj;$(MSBuildProjectDirectory)/../docs/GettingStarted/**/*.config" Exclude="**/bin/**; **/obj/**" SkipUnchangedFiles="true" />
     </ItemGroup>
