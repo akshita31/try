@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MLS.Agent.Tests
 {
-    public class TemplateTests
+    public class TemplateTests: IDisposable
     {
         public TemplateTests()
         {
@@ -17,7 +17,7 @@ namespace MLS.Agent.Tests
             Task.Run(() => dotnet.Execute($"new -i {pathToTemplateCsproj}")).Wait();
         }
 
-        ~TemplateTests()
+        public void Dispose()
         {
             var pathToTemplateCsproj = Path.Combine(Directory.GetCurrentDirectory(), "template");
             var dotnet = new Dotnet();
