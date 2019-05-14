@@ -4,12 +4,12 @@ This is how you can create an interactive documentation for your projects. In yo
 
 Just begin by typing `dotnet try` in the command prompt.
 
-```cs --source-file ./Program.cs --project ./Microsoft.DotNet.Try.Template.csproj --region run
+```cs --source-file ./Program.cs --project ./Microsoft.DotNet.Try.Template.csproj --region HelloWorld
 ```
 
 Congrats you have run your first sample.
 
 Lets see how we can use the code from another region
 
-```cs --source-file ./Program.cs --project ./Microsoft.DotNet.Try.Template.csproj --region run1
+```cs --source-file ./Program.cs --project ./Microsoft.DotNet.Try.Template.csproj --region DateTime
 ```

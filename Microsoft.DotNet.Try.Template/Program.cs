@@ -13,43 +13,43 @@ namespace Snippets
         {
             switch (region)
             {
-                case "run":
-                    Run();
+                case "HelloWorld":
+                    HelloWorld();
                     break;
-                case "run1":
-                    Run1();
+                case "DateTime":
+                    DateTime();
                     break;
-                case "run2":
-                    Run2();
+                case "Guid":
+                    Guid();
                     break;
-                case "run3":
-                    Run3();
+                case "EmptyRegion":
+                    EmptyRegion();
                     break;
             }
         }
 
-        public static void Run()
+        public static void HelloWorld()
         {
             #region run
             Console.WriteLine("Hello World!");
             #endregion
         }
 
-        public static void Run1()
+        public static void DateTime()
         {
             #region run1
-            Console.WriteLine(DateTime.Now);
+            Console.WriteLine(System.DateTime.Now);
             #endregion
         }
 
-        public static void Run2()
+        public static void Guid()
         {
             #region run2
-            Console.WriteLine(Guid.NewGuid());
+            Console.WriteLine(System.Guid.NewGuid());
             #endregion
         }
         
-        public static void Run3()
+        public static void EmptyRegion()
         {
             #region run3
             #endregion
