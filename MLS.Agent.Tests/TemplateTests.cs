@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.CommandLine;
 using MLS.Agent.CommandLine;
 using Microsoft.DotNet.Try.Protocol.Tests;
+using System.Linq;
 
 namespace MLS.Agent.Tests
 {
@@ -63,6 +64,26 @@ namespace MLS.Agent.Tests
                        .Match(
                            $"{outputDirectory}{Path.DirectorySeparatorChar}Readme.md*Line 7:*{outputDirectory}{Path.DirectorySeparatorChar}Program.cs (in project {outputDirectory}{Path.DirectorySeparatorChar}Microsoft.DotNet.Try.Template.csproj)*".EnforceLF());
 
+        }
+
+        [Fact]
+        public async Task The_installed_project_has_the_name_of_the_folder()
+        {
+            var outputDirectory = Create.EmptyWorkspace().Directory;
+            var dotnet = new Dotnet(outputDirectory);
+            await dotnet.New("try");
+
+            outputDirectory.GetFiles("*.csproj").Single().Name.Should().Contain(outputDirectory.Name);
+        }
+
+        [Fact]
+        public async Task When_the_name_argument_is_passed_it_creates_a_folder_with_the_project_having_the_passed_name()
+        {
+            var outputDirectory = Create.EmptyWorkspace().Directory;
+            var dotnet = new Dotnet(outputDirectory);
+            await dotnet.New("try --name testProject");
+
+            outputDirectory.GetDirectories().Single().GetFiles("*.csproj").Single().Name.Should().Be("testProject.csproj");
         }
     }
 }
