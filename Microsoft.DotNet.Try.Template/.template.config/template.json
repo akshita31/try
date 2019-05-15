@@ -7,20 +7,9 @@
         "type": "project"
       },
     "identity": "Microsoft.DotNet.Try.Template",
-    "defaultName": "InteractiveSample1",
+    "defaultName": "Microsoft.DotNet.Try.Template",
     "name": "Sample project for interactive documentation",
     "shortName": "try",
-    "sourceName": "InteractiveSample1",
-    "preferNameDirectory": true,
-    "postActions": [
-        {
-          "condition": "(!skipRestore)",
-          "description": "Restore NuGet packages required by this project.",
-          "manualInstructions": [
-            { "text": "Run 'dotnet restore'" }
-          ],
-          "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
-          "continueOnError": true
-        }
-    ]
+    "sourceName": "Microsoft.DotNet.Try.Template",
+    "preferNameDirectory": true
 }

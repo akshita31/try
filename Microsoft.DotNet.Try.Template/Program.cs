@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Snippets
+namespace Microsoft.DotNet.Try.Template
 {
     public class Program
     {
