@@ -7,8 +7,11 @@
         "type": "project"
       },
     "identity": "Microsoft.DotNet.Try.Template",
+    "defaultName": "InteractiveSample1",
     "name": "Sample project for interactive documentation",
     "shortName": "try",
+    "sourceName": "InteractiveSample1",
+    "preferNameDirectory": true,
     "postActions": [
         {
           "condition": "(!skipRestore)",
