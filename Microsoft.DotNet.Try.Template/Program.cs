@@ -30,28 +30,28 @@ namespace Snippets
 
         public static void HelloWorld()
         {
-            #region run
+            #region HelloWorld
             Console.WriteLine("Hello World!");
             #endregion
         }
 
         public static void DateTime()
         {
-            #region run1
+            #region DateTime
             Console.WriteLine(System.DateTime.Now);
             #endregion
         }
 
         public static void Guid()
         {
-            #region run2
+            #region Guid
             Console.WriteLine(System.Guid.NewGuid());
             #endregion
         }
         
         public static void EmptyRegion()
         {
-            #region run3
+            #region EmptyRegion
             #endregion
         }
     }
