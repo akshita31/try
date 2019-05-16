@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
-    <id>Microsoft.DotNet.Try.Template</id>
-    <version>1.0.0</version>
-    <description>
-      A template for getting started with interactive documentation
-    </description>
-    <authors>Microsoft</authors>
+   $CommonMetadataElements$
     <packageTypes>
       <packageType name="Template" />
     </packageTypes>

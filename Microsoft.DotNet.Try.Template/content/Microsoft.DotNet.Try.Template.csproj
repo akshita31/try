@@ -3,7 +3,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Microsoft.DotNet.Try.Template</PackageId>
+    <NuspecFile>../Microsoft.DotNet.Try.Template.nuspec</NuspecFile>
+    <IsPackable>true</IsPackable>
+    <PackageDescription> A template for getting started with interactive documentation</PackageDescription>
   </PropertyGroup>
 
   <ItemGroup>
