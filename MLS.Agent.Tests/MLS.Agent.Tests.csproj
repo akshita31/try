@@ -10,6 +10,14 @@
     <EmbeddedResource Remove="TestResults\**" />
     <None Remove="TestResults\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="..\Microsoft.DotNet.Try.Template\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Microsoft.DotNet.Try.Template\**" Link="template\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   
 
   <ItemGroup>
@@ -54,17 +62,6 @@
     <ProjectReference Include="..\MLS.Agent.Tools\MLS.Agent.Tools.csproj" />
     <ProjectReference Include="..\WorkspaceServer.Tests\WorkspaceServer.Tests.csproj" />
   </ItemGroup>
-
-  <Target Name="CopyTemplates" AfterTargets="AfterBuild">
-    <PropertyGroup>
-      <TemplateFolderName>$(MSBuildProjectDirectory)/../Microsoft.DotNet.Try.Template</TemplateFolderName>
-    </PropertyGroup>
-    <ItemGroup>
-      <TemplateFiles Include="$(TemplateFolderName)/*.cs;$(TemplateFolderName)/*.md;$(TemplateFolderName)/*.csproj;$(TemplateFolderName)/**/*.json" Exclude="**/bin/**; **/obj/**" SkipUnchangedFiles="true" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(OutputPath)/template/%(RecursiveDir)"/>
-  </Target>
 
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
