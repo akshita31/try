@@ -12,29 +12,22 @@ using System.Linq;
 
 namespace MLS.Agent.Tests
 {
-    public class TemplateTests: IDisposable
+    public class TemplateTests
     {
         private string _pathToTemplateCsproj;
 
         public TemplateTests()
         {
             _pathToTemplateCsproj = Path.Combine(Directory.GetCurrentDirectory(), "template");
-            var dotnet = new Dotnet();
-            Task.Run(() => dotnet.Execute($"new -i {_pathToTemplateCsproj}")).Wait();
-        }
-
-        public void Dispose()
-        {
-            var dotnet = new Dotnet();
-            Task.Run(() => dotnet.Execute($"new --uninstall {_pathToTemplateCsproj}")).Wait();
         }
 
         [Fact]
         public async Task When_the_template_is_installed_it_has_the_files()
         {
-            var outputDirectory = Create.EmptyWorkspace().Directory;
-            var dotnet = new Dotnet(outputDirectory);
-            await dotnet.New("try");
+            var baseDirectory = Create.EmptyWorkspace().Directory;
+            var outputDirectory = baseDirectory.CreateSubdirectory("outputTemplate");
+            await InstallTemplateAndCreateProject(baseDirectory, outputDirectory);
+
             outputDirectory.GetFiles().Should().Contain(file => file.FullName.Contains("Program.cs"));
             outputDirectory.GetFiles().Should().Contain(file => file.FullName.Contains("Readme.md"));
         }
@@ -42,9 +35,9 @@ namespace MLS.Agent.Tests
         [Fact]
         public async Task When_the_template_is_installed_verify_works()
         {
-            var outputDirectory = Create.EmptyWorkspace().Directory.CreateSubdirectory("test");
-            var dotnet = new Dotnet(outputDirectory);
-            await dotnet.New("try");
+            var baseDirectory = Create.EmptyWorkspace().Directory;
+            var outputDirectory = baseDirectory.CreateSubdirectory("outputTemplate");
+            await InstallTemplateAndCreateProject(baseDirectory, outputDirectory);
 
             var console = new TestConsole();
             var directoryAccessor = new FileSystemDirectoryAccessor(outputDirectory);
@@ -62,16 +55,16 @@ namespace MLS.Agent.Tests
                        .Trim()
                        .Should()
                        .Match(
-                           $"{outputDirectory}{Path.DirectorySeparatorChar}Readme.md*Line 7:*{outputDirectory}{Path.DirectorySeparatorChar}Program.cs (in project {outputDirectory}{Path.DirectorySeparatorChar}test.csproj)*".EnforceLF());
+                           $"{outputDirectory}{Path.DirectorySeparatorChar}Readme.md*Line 7:*{outputDirectory}{Path.DirectorySeparatorChar}Program.cs (in project {outputDirectory}{Path.DirectorySeparatorChar}{outputDirectory.Name}.csproj)*".EnforceLF());
 
         }
 
         [Fact]
         public async Task The_installed_project_has_the_name_of_the_folder()
         {
-            var outputDirectory = Create.EmptyWorkspace().Directory;
-            var dotnet = new Dotnet(outputDirectory);
-            await dotnet.New("try");
+            var baseDirectory = Create.EmptyWorkspace().Directory;
+            var outputDirectory = baseDirectory.CreateSubdirectory("outputTemplate");
+            await InstallTemplateAndCreateProject(baseDirectory, outputDirectory);
 
             outputDirectory.GetFiles("*.csproj").Single().Name.Should().Contain(outputDirectory.Name);
         }
@@ -79,11 +72,20 @@ namespace MLS.Agent.Tests
         [Fact]
         public async Task When_the_name_argument_is_passed_it_creates_a_folder_with_the_project_having_the_passed_name()
         {
-            var outputDirectory = Create.EmptyWorkspace().Directory;
-            var dotnet = new Dotnet(outputDirectory);
-            await dotnet.New("try --name testProject");
+            var baseDirectory = Create.EmptyWorkspace().Directory;
+            var outputDirectory = baseDirectory.CreateSubdirectory("outputTemplate");
+            await InstallTemplateAndCreateProject(baseDirectory, outputDirectory, "--name testProject");
 
             outputDirectory.GetDirectories().Single().GetFiles("*.csproj").Single().Name.Should().Be("testProject.csproj");
+        }
+
+        private async Task InstallTemplateAndCreateProject(DirectoryInfo baseDirectory, DirectoryInfo outputDirectory, string args = "")
+        {
+            var hiveDirectoryPath = baseDirectory.CreateSubdirectory("customHive").FullName;
+            var dotnet = new Dotnet(outputDirectory);
+            var customHiveArgument = $"--debug:custom-hive {hiveDirectoryPath}";
+            await dotnet.New($"-i {_pathToTemplateCsproj} {customHiveArgument}");
+            await dotnet.New($"try {args}", customHiveArgument);
         }
     }
 }
