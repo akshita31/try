@@ -42,7 +42,7 @@ namespace MLS.Agent.Tests
         [Fact]
         public async Task When_the_template_is_installed_verify_works()
         {
-            var outputDirectory = Create.EmptyWorkspace().Directory;
+            var outputDirectory = Create.EmptyWorkspace().Directory.CreateSubdirectory("test");
             var dotnet = new Dotnet(outputDirectory);
             await dotnet.New("try");
 
@@ -62,7 +62,7 @@ namespace MLS.Agent.Tests
                        .Trim()
                        .Should()
                        .Match(
-                           $"{outputDirectory}{Path.DirectorySeparatorChar}Readme.md*Line 7:*{outputDirectory}{Path.DirectorySeparatorChar}Program.cs (in project {outputDirectory}{Path.DirectorySeparatorChar}Microsoft.DotNet.Try.Template.csproj)*".EnforceLF());
+                           $"{outputDirectory}{Path.DirectorySeparatorChar}Readme.md*Line 7:*{outputDirectory}{Path.DirectorySeparatorChar}Program.cs (in project {outputDirectory}{Path.DirectorySeparatorChar}test.csproj)*".EnforceLF());
 
         }
 
