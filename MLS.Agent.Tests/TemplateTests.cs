@@ -1,12 +1,12 @@
 ﻿using WorkspaceServer;
 using Xunit;
 using WorkspaceServer.Tests;
-using System;
 using System.IO;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.CommandLine;
 using MLS.Agent.CommandLine;
+using MLS.Agent.Tools;
 using Microsoft.DotNet.Try.Protocol.Tests;
 using System.Linq;
 
@@ -84,8 +84,10 @@ namespace MLS.Agent.Tests
             var hiveDirectoryPath = baseDirectory.CreateSubdirectory("customHive").FullName;
             var dotnet = new Dotnet(outputDirectory);
             var customHiveArgument = $"--debug:custom-hive {hiveDirectoryPath}";
-            await dotnet.New($"-i {_pathToTemplateCsproj} {customHiveArgument}");
-            await dotnet.New($"try {args}", customHiveArgument);
+            var installResult = await dotnet.Execute($"new -i {_pathToTemplateCsproj} {customHiveArgument}");
+            installResult.ThrowOnFailure($"Failed to install template because {installResult.Error}");
+            var creationResult = await dotnet.Execute($"new try {args} {customHiveArgument}");
+            creationResult.ThrowOnFailure($"Failed to create tempate because {creationResult.Error}");
         }
     }
 }
