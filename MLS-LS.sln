@@ -64,7 +64,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DotNet.Try.Client
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageTool.Tests", "PackageTool.Tests\PackageTool.Tests.csproj", "{E4B98584-F452-4D51-B5A3-B6B3D4C4D24B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DotNet.Try.Template", "Microsoft.DotNet.Try.Template\Microsoft.DotNet.Try.Template.csproj", "{57D86DD5-DD18-44AF-ACB1-D4008AC53196}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DotNet.Try.Template", "Microsoft.DotNet.Try.Template\content\Microsoft.DotNet.Try.Template.csproj", "{57D86DD5-DD18-44AF-ACB1-D4008AC53196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
