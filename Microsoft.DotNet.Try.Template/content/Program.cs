@@ -1,58 +1,56 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Try.Template
 {
     public class Program
     {
-        static void Main(
+        static int Main(
             string region = null,
             string session = null,
             string package = null,
             string project = null,
             string[] args = null)
         {
-            switch (region)
+            return region switch
             {
-                case "HelloWorld":
-                    HelloWorld();
-                    break;
-                case "DateTime":
-                    DateTime();
-                    break;
-                case "Guid":
-                    Guid();
-                    break;
-                case "EmptyRegion":
-                    EmptyRegion();
-                    break;
-            }
+                "HelloWorld" => HelloWorld(),
+                "DateTime" => DateTime(),
+                "Guid" => Guid(),
+                "EmptyRegion" => EmptyRegion(),
+                _ => EmptyRegion()
+            };
         }
 
-        public static void HelloWorld()
+        public static int HelloWorld()
         {
             #region HelloWorld
             Console.WriteLine("Hello World!");
             #endregion
+            return 0;
         }
 
-        public static void DateTime()
+        public static int DateTime()
         {
             #region DateTime
             Console.WriteLine(System.DateTime.Now);
             #endregion
+            return 0;
         }
 
-        public static void Guid()
+        public static int Guid()
         {
             #region Guid
             Console.WriteLine(System.Guid.NewGuid());
             #endregion
+            return 0;
         }
         
-        public static void EmptyRegion()
+        public static int EmptyRegion()
         {
             #region EmptyRegion
             #endregion
+            return 0;
         }
     }
 }
