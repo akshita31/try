@@ -13,8 +13,6 @@ export NUGET_XMLDOC_MODE=none
 apk update
 apk add xmlstarlet
 apk add shadow
-apk add --update nodejs
-apk add --update nodejs-npm
 
 # Add dotnet tools
 dotnet tool install -g --version 1.0.87 t-rex
@@ -22,14 +20,6 @@ dotnet tool install -g --version 1.0.87 t-rex
 #add Blazor templates
 dotnet new -i Microsoft.AspNetCore.Blazor.Templates::0.7.0
 
-# Restore the project
-dotnet restore $REPO_ROOT/MLS-LS.sln
-
-# force MLS.WasmCodeRunner package into cache
-mkdir -p /tmp/WasmCodeRunner
-cd /tmp/WasmCodeRunner
-dotnet new console
-dotnet add package MLS.WasmCodeRunner --version 1.0.7880001-alpha-c895bf25
 
 # prepopulate workspaces
 

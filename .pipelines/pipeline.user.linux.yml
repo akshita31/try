@@ -70,7 +70,7 @@ versioning:
 # Eventually, network access will be limited or cut-off in this stage.
 build:
   commands:
-
+  
     - !!defaultcommand
       name: '.cdpx/restore.sh'
       command: '.cdpx/restore.sh'
@@ -80,36 +80,6 @@ build:
       name: '.cdpx/build.sh'
       command: '.cdpx/build.sh'
       fail_on_stderr: false
-                                                                        
-      artifacts:                                         
-        - from: './express/ServiceLayout'
-          to: 'ServiceLayout'
-          include:
-            - '**/*'        
-        - from: '.release'
-          to: '.'
-          include:
-            - '**/*' 
-        - from: '.package'
-          to: '.'
-          include:
-            - '**/*.nupkg'
-        - from: '.package/package'
-          to: './mls-agent-results'
-          include:
-            - '**/*'
-                                                                        # We always preserve the root relative path for every matched file.
-                                                                        # Sometimes that's OK and sometimes it's not. The from, to options
-                                                                        # (both are optional and either of them can be used independently)
-                                                                        # allow you to remap the folder from which articacts are picked up to
-                                                                        # a different location. Think of this as a effectively doing a
-                                                                        # robocopy /S C:\X\Y to D;\F.
-# An optional user defined stage for performing packaging. This exists as a separate stage because some build processes do a
-# compile-sign-package-sign model. For example, Windows based builds use this model. Linux builds typically follow a
-# compile-hash-package-hash-sign hash model. For those folks, package may not need to exist as a separate step.
-# Eventually, network access will be limited or cut-off in this stage.
-package:
-  commands:
     - !!dockerbuildcommand
       name: 'Build container'
       context_folder: './docker/'
@@ -133,36 +103,6 @@ package_sources:
 # can be run in build or package stages itself. Any artifacts built in this stage will be separated out and will not be signed.
 # However, we recommend that tests always be run in the test stage.
 # Eventually, we may even skip test artifacts completely.
-
-test:
-  commands:
-    - !!testcommand
-      name: 'Test'
-      command: '.cdpx/test.sh'
-      fail_on_stderr: false 
-      testresults:
-        - title: 'Unit Tests'
-          type: 'VSTest'
-          include:
-            - '**/*.trx'
-
-                                                                        # This is a sequence of script files to be executed one after another
-                                                                        # in the order they appear here.
-#   - !!testcommand                                                     # We are going to run tests and collect back the test results for
-#                                                                       # publishing
-#     name: 'Test The Code'                                             # If your test run does not have a name, this will be used.
-#     command: 'src\test.cmd'                                           # Script that runs tests.
-#     testresults:                                                      # Sequence of entries indicating which test results files to collect.
-#       - title: 'All Tests'                                            # Test run title. Used by VSTS.
-#         configuration: 'Debug'                                        # Optional build configuration.
-#         platform: 'x64'                                               # Optional build platform.
-#         type: 'vstest'                                                # Test engine type. Used by VSTS. Supported values are JUnit, NUnit,
-#                                                                       # VSTest and xUnit.
-#         include:                                                      # Sequence of glob patterns indicating which test results file to
-#                                                                       # associate with this test run.
-#           - 'src\**\TestResults\**\*.trx'                             # Include all TRX files under any TestResults folder under the src
-#                                                                       # folder.
-
 
 
 # An optional, interim user defined stage for performing publishing of the build. Examples include, dropping the files to a network share,
