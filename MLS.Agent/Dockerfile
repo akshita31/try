@@ -16,7 +16,6 @@ RUN useradd -r --gid app_group --home /app --shell /sbin/nologin --comment "app 
 COPY . ./
 
 RUN chown -R app_user:app_group /app
-RUN chown -R app_user:app_group /dependencies/.nuget/packages
 RUN chown -R app_user:app_group /workspaces
 
 RUN chmod -R 777 /root/
