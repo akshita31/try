@@ -16,6 +16,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.Recommendations;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.CodeAnalysis.Text;
+using Microsoft.DotNet.Try.Protocol;
+using WorkspaceServer.LanguageServices;
+using CompletionItem = Microsoft.DotNet.Try.Protocol.CompletionItem;
 using Microsoft.DotNet.Interactive.Rendering;
 using Task = System.Threading.Tasks.Task;
 
