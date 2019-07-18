@@ -15,6 +15,7 @@ using Microsoft.DotNet.Interactive.Jupyter;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MLS.Agent.Markdown;
+using MLS.Agent.Tools;
 using MLS.Repositories;
 using WorkspaceServer;
 using WorkspaceServer.Kernel;
@@ -391,6 +392,15 @@ namespace MLS.Agent.CommandLine
 
                     return jupyter(options, console, startServer, context);
                 });
+
+                var installCommand = new Command("install", "Install the .NET kernel for Jupyter");
+                installCommand.Handler = CommandHandler.Create(() =>
+                {
+                    //DotnetKernelJupyterInstaller.Install();
+                });
+
+                jupyterCommand.AddCommand(installCommand);
+
 
                 return jupyterCommand;
             }
