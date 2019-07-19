@@ -17,7 +17,7 @@ namespace MLS.Agent
     {
         public delegate Task<CommandLineResult> ExecuteCommand(string command, string args);
 
-        private static async Task<int> TryInstallKernel(ExecuteCommand executeCommand, IConsole console)
+        public static async Task<int> InstallKernel(ExecuteCommand executeCommand, IConsole console)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace MLS.Agent
                     string element = jupyterPathInfo.ElementAt(index);
                     if (!string.IsNullOrWhiteSpace(element))
                     {
-                        if (element.Trim('\r', '\n').EndsWith(":"))
+                        if (element.TrimLineEndings().EndsWith(":"))
                         {
                             break;
                         }
