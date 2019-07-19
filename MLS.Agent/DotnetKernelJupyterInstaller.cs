@@ -60,11 +60,11 @@ namespace MLS.Agent
                     }
 
                     // Copy the files into the kernels directory
-
+                    File.Copy("kernels.json", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                    File.Copy("logo-32x32.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                    File.Copy("logo-64x64.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
                 }
             }
-
-            throw new NotImplementedException();
         }
 
         public static async Task<IEnumerable<DirectoryInfo>> GetJupyterDataPaths(IReadOnlyCollection<string> jupyterPathInfo)
