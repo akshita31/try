@@ -22,9 +22,9 @@ namespace MLS.Agent
             try
             {
                 var result = await executeCommand("jupyter", "--paths");
-                if(result.ExitCode ==0)
+                if (result.ExitCode == 0)
                 {
-                    var dataDirectories = await GetJupyterDataPaths(result.Output);
+                    var dataDirectories = await GetJupyterDataPaths(result.Output.ToArray());
                     Installkernel(dataDirectories, console);
                     console.Out.WriteLine(".NET kernel installation succeded");
                     return 0;
@@ -43,24 +43,24 @@ namespace MLS.Agent
 
         private static void Installkernel(IEnumerable<DirectoryInfo> dataDirectories, IConsole console)
         {
-            foreach(var directory in dataDirectories)
+            foreach (var directory in dataDirectories)
             {
                 if (directory.Exists)
                 {
                     var kernelDirectory = directory.Subdirectory("kernels");
-                    if(!kernelDirectory.Exists)
+                    if (!kernelDirectory.Exists)
                     {
                         kernelDirectory.Create();
                     }
 
                     var dotnetkernelDir = kernelDirectory.Subdirectory(".NET");
-                    if(!dotnetkernelDir.Exists)
+                    if (!dotnetkernelDir.Exists)
                     {
                         dotnetkernelDir.Create();
                     }
 
                     console.Out.WriteLine($"Installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
-                    
+
                     // Copy the files into the kernels directory
                     File.Copy("kernels.json", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
                     File.Copy("logo-32x32.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
@@ -70,29 +70,16 @@ namespace MLS.Agent
             }
         }
 
-        public static async Task<IEnumerable<DirectoryInfo>> GetJupyterDataPaths(IReadOnlyCollection<string> jupyterPathInfo)
+        public static async Task<IEnumerable<DirectoryInfo>> GetJupyterDataPaths(string[] jupyterPathInfo)
         {
-            var indexOfDataNode = Array.FindIndex(jupyterPathInfo.ToArray(), element => element.TrimLineEndings().CompareTo("data:") == 0);
-            if (indexOfDataNode != -1)
+            var dataHeaderIndex = Array.FindIndex(jupyterPathInfo, element => element.TrimLineEndings().CompareTo("data:") == 0);
+            if (dataHeaderIndex != -1)
             {
-                var currentPaths = new List<string>();
-                for (var index = indexOfDataNode + 1; index < jupyterPathInfo.Count; index++)
-                {
-                    string element = jupyterPathInfo.ElementAt(index);
-                    if (!string.IsNullOrWhiteSpace(element))
-                    {
-                        if (element.TrimLineEndings().EndsWith(":"))
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            currentPaths.Add(element);
-                        }
-                    }
-                }
+                var nextHeaderIndex = Array.FindIndex(jupyterPathInfo, dataHeaderIndex + 1, element => element.TrimLineEndings().EndsWith(":"));
+                if (nextHeaderIndex == -1)
+                    nextHeaderIndex = jupyterPathInfo.Count();
 
-                return currentPaths.Select(dir => new DirectoryInfo(dir));
+                return jupyterPathInfo.Skip(dataHeaderIndex+1).Take(nextHeaderIndex - dataHeaderIndex - 1).Select(dir => new DirectoryInfo(dir.Trim().TrimLineEndings()));
             }
             else
             {
@@ -101,11 +88,11 @@ namespace MLS.Agent
             }
         }
     }
+}
 
-    internal class KernelInstallationFailureException : Exception
+internal class KernelInstallationFailureException : Exception
+{
+    public KernelInstallationFailureException(string message) : base(message)
     {
-        public KernelInstallationFailureException(string message) : base(message)
-        {
-        }
     }
 }
