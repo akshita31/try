@@ -27,7 +27,7 @@ data:
 runtime:
     C:\Users\akagarw\AppData\Roaming\jupyter\runtime".Split("\n");
 
-            DotnetKernelJupyterInstaller.ExecuteCommand executeCommand = (command, args) => Task.FromResult(new CommandLineResult(0, pathsOutput));
+            Task<CommandLineResult> executeCommand(string command, string args) => Task.FromResult(new CommandLineResult(0, pathsOutput));
             var dataDirectories = await DotnetKernelJupyterInstaller.GetJupyterDataPaths(executeCommand);
             dataDirectories.Should().HaveCount(3);
         }
