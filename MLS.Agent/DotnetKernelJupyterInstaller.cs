@@ -72,14 +72,14 @@ namespace MLS.Agent
 
         public static async Task<IEnumerable<DirectoryInfo>> GetJupyterDataPaths(string[] jupyterPathInfo)
         {
-            var dataHeaderIndex = Array.FindIndex(jupyterPathInfo, element => element.TrimLineEndings().CompareTo("data:") == 0);
+            var dataHeaderIndex = Array.FindIndex(jupyterPathInfo, element => element.Trim().CompareTo("data:") == 0);
             if (dataHeaderIndex != -1)
             {
-                var nextHeaderIndex = Array.FindIndex(jupyterPathInfo, dataHeaderIndex + 1, element => element.TrimLineEndings().EndsWith(":"));
+                var nextHeaderIndex = Array.FindIndex(jupyterPathInfo, dataHeaderIndex + 1, element => element.Trim().EndsWith(":"));
                 if (nextHeaderIndex == -1)
                     nextHeaderIndex = jupyterPathInfo.Count();
 
-                return jupyterPathInfo.Skip(dataHeaderIndex+1).Take(nextHeaderIndex - dataHeaderIndex - 1).Select(dir => new DirectoryInfo(dir.Trim().TrimLineEndings()));
+                return jupyterPathInfo.Skip(dataHeaderIndex+1).Take(nextHeaderIndex - dataHeaderIndex - 1).Select(dir => new DirectoryInfo(dir.Trim()));
             }
             else
             {
