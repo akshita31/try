@@ -15,7 +15,6 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Recommendations;
 using Microsoft.CodeAnalysis.Scripting;
 using WorkspaceServer.LanguageServices;
-using CompletionItem = Microsoft.DotNet.Try.Protocol.CompletionItem;
 using Microsoft.DotNet.Interactive.Rendering;
 using WorkspaceServer.Servers.Scripting;
 using Task = System.Threading.Tasks.Task;
@@ -238,7 +237,7 @@ namespace WorkspaceServer.Kernel
                     symbolToSymbolKey[key] = symbol;
                 }
             }
-            var items = completionList.Items.Select(item => item.ToModel(symbolToSymbolKey, document)).ToArray();
+            var items = completionList.Items.Select(item => item.ToModel(symbolToSymbolKey, document).ToDomainObject()).ToArray();
 
             return items;
         }
