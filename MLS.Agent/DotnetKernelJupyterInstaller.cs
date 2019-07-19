@@ -43,6 +43,27 @@ namespace MLS.Agent
 
         private static void Installkernel(IEnumerable<DirectoryInfo> dataDirectories)
         {
+            foreach(var directory in dataDirectories)
+            {
+                if (directory.Exists)
+                {
+                    var kernelDirectory = directory.Subdirectory("kernels");
+                    if(!kernelDirectory.Exists)
+                    {
+                        kernelDirectory.Create();
+                    }
+
+                    var dotnetkernelDir = kernelDirectory.Subdirectory(".NET");
+                    if(!dotnetkernelDir.Exists)
+                    {
+                        dotnetkernelDir.Create();
+                    }
+
+                    // Copy the files into the kernels directory
+
+                }
+            }
+
             throw new NotImplementedException();
         }
 
@@ -78,7 +99,6 @@ namespace MLS.Agent
         }
     }
 
-    [Serializable]
     internal class KernelInstallationFailureException : Exception
     {
         public KernelInstallationFailureException(string message) : base(message)
