@@ -25,7 +25,7 @@ namespace MLS.Agent
                 if(result.ExitCode ==0)
                 {
                     var dataDirectories = await GetJupyterDataPaths(result.Output);
-                    Installkernel(dataDirectories);
+                    Installkernel(dataDirectories, console);
                     console.Out.WriteLine(".NET kernel installation succeded");
                     return 0;
                 }
@@ -41,7 +41,7 @@ namespace MLS.Agent
             }
         }
 
-        private static void Installkernel(IEnumerable<DirectoryInfo> dataDirectories)
+        private static void Installkernel(IEnumerable<DirectoryInfo> dataDirectories, IConsole console)
         {
             foreach(var directory in dataDirectories)
             {
@@ -59,10 +59,13 @@ namespace MLS.Agent
                         dotnetkernelDir.Create();
                     }
 
+                    console.Out.WriteLine($"Installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
+                    
                     // Copy the files into the kernels directory
                     File.Copy("kernels.json", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
                     File.Copy("logo-32x32.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
                     File.Copy("logo-64x64.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                    console.Out.WriteLine($"Finished installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
                 }
             }
         }
