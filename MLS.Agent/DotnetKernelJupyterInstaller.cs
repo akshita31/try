@@ -1,17 +1,13 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.CommandLine;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using MLS.Agent.Tools;
 
-namespace MLS.Agent
+namespace MLS.Agent.Jupyter
 {
     public static class DotnetKernelJupyterInstaller
     {
@@ -19,24 +15,16 @@ namespace MLS.Agent
 
         public static async Task<int> InstallKernel(ExecuteCommand executeCommand, IConsole console)
         {
-            try
+            var dataPathsResult = JupyterPathInfo.GetDataPaths(await executeCommand("jupyter", "--paths"));
+            if (!string.IsNullOrEmpty(dataPathsResult.Error))
             {
-                var result = await executeCommand("jupyter", "--paths");
-                if (result.ExitCode == 0)
-                {
-                    var dataDirectories = await GetJupyterDataPaths(result.Output.ToArray());
-                    Installkernel(dataDirectories, console);
-                    console.Out.WriteLine(".NET kernel installation succeded");
-                    return 0;
-                }
-                else
-                {
-                    throw new KernelInstallationFailureException($"Tried to invoke \"jupyter --paths\" but failed with exception: {string.Join("\n", result.Error)}");
-                }
+                Installkernel(dataPathsResult.Paths, console);
+                console.Out.WriteLine(".NET kernel installation succeded");
+                return 0;
             }
-            catch (KernelInstallationFailureException e)
+            else
             {
-                console.Out.WriteLine($".NET Kernel Installation failed with error {string.Join("\n", e.Message)}");
+                console.Error.WriteLine($".NET Kernel Installation failed with error: {dataPathsResult.Error}");
                 return -1;
             }
         }
@@ -69,30 +57,5 @@ namespace MLS.Agent
                 }
             }
         }
-
-        public static async Task<IEnumerable<DirectoryInfo>> GetJupyterDataPaths(string[] jupyterPathInfo)
-        {
-            var dataHeaderIndex = Array.FindIndex(jupyterPathInfo, element => element.Trim().CompareTo("data:") == 0);
-            if (dataHeaderIndex != -1)
-            {
-                var nextHeaderIndex = Array.FindIndex(jupyterPathInfo, dataHeaderIndex + 1, element => element.Trim().EndsWith(":"));
-                if (nextHeaderIndex == -1)
-                    nextHeaderIndex = jupyterPathInfo.Count();
-
-                return jupyterPathInfo.Skip(dataHeaderIndex+1).Take(nextHeaderIndex - dataHeaderIndex - 1).Select(dir => new DirectoryInfo(dir.Trim()));
-            }
-            else
-            {
-                throw new KernelInstallationFailureException($"Could not find the jupyter kernel installation directory." +
-                    $" Output of \"jupyter --paths\" is {string.Join('\n', jupyterPathInfo)}");
-            }
-        }
-    }
-}
-
-internal class KernelInstallationFailureException : Exception
-{
-    public KernelInstallationFailureException(string message) : base(message)
-    {
     }
 }
