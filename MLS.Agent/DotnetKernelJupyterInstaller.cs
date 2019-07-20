@@ -16,7 +16,7 @@ namespace MLS.Agent.Jupyter
         public static async Task<int> InstallKernel(ExecuteCommand executeCommand, IConsole console)
         {
             var dataPathsResult = JupyterPathInfo.GetDataPaths(await executeCommand("jupyter", "--paths"));
-            if (!string.IsNullOrEmpty(dataPathsResult.Error))
+            if (string.IsNullOrEmpty(dataPathsResult.Error))
             {
                 Installkernel(dataPathsResult.Paths, console);
                 console.Out.WriteLine(".NET kernel installation succeded");
