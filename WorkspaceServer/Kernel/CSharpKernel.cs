@@ -79,7 +79,7 @@ namespace WorkspaceServer.Kernel
             return (true, code);
         }
 
-        protected internal override async Task HandleAsync(
+        protected override async Task HandleAsync(
             IKernelCommand command,
             KernelPipelineContext context)
         {
