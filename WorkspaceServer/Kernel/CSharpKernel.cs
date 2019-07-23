@@ -176,6 +176,7 @@ namespace WorkspaceServer.Kernel
                             new ValueProduced(
                                 std,
                                 codeSubmission,
+                                false,
                                 formattedValues));
                     }
                     if (HasReturnValue)
@@ -193,6 +194,7 @@ namespace WorkspaceServer.Kernel
                             new ValueProduced(
                                 _scriptState.ReturnValue,
                                 codeSubmission,
+                                true,
                                 formattedValues));
                     }
 
