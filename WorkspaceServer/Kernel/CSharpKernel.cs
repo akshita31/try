@@ -120,9 +120,9 @@ namespace WorkspaceServer.Kernel
             {
                 context.OnNext(new CompleteCodeSubmissionReceived(codeSubmission));
                 Exception exception = null;
-                var output = Array.Empty<string>();
                 using (var console = await ConsoleOutput.Capture())
                 {
+                    console.SubscribeToStdOutput((std) => PublishOutput(std, context, codeSubmission));
 
                     try
                     {
@@ -148,10 +148,6 @@ namespace WorkspaceServer.Kernel
                     {
                         exception = e;
                     }
-                    output =
-                        console.WriteOccurredOnStandardOutput
-                            ? console.GetStandardOutputWrites().ToArray()
-                            : Array.Empty<string>();
                 }
 
                 if (exception != null)
@@ -164,21 +160,6 @@ namespace WorkspaceServer.Kernel
                 }
                 else
                 {
-                    foreach (var std in output)
-                    {
-                        var formattedValues = new List<FormattedValue>
-                        {
-                            new FormattedValue(
-                                Formatter.MimeTypeFor(std?.GetType() ?? typeof(object)), std)
-                        };
-
-                        context.OnNext(
-                            new ValueProduced(
-                                std,
-                                codeSubmission,
-                                false,
-                                formattedValues));
-                    }
                     if (HasReturnValue)
                     {
                         var writer = new StringWriter();
@@ -207,6 +188,22 @@ namespace WorkspaceServer.Kernel
                 context.OnNext(new IncompleteCodeSubmissionReceived(codeSubmission));
                 context.OnCompleted();
             }
+        }
+
+        private void PublishOutput(string std, KernelInvocationContext context, IKernelCommand command)
+        {
+            var formattedValues = new List<FormattedValue>
+                        {
+                            new FormattedValue(
+                                Formatter.MimeTypeFor(std?.GetType() ?? typeof(object)), std)
+                        };
+
+            context.OnNext(
+                new ValueProduced(
+                    std,
+                    command,
+                    false,
+                    formattedValues));
         }
 
         private async Task HandleRequestCompletion(
