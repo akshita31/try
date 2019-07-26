@@ -13,9 +13,9 @@ namespace MLS.Agent.Jupyter
     {
         public delegate Task<CommandLineResult> ExecuteCommand(string command, string args);
 
-        public static async Task<int> InstallKernel(ExecuteCommand executeCommand, IConsole console)
+        public static int InstallKernel(CommandLineResult commandLineResult, IConsole console)
         {
-            var dataPathsResult = JupyterPathInfo.GetDataPaths(await executeCommand("jupyter", "--paths"));
+            var dataPathsResult = JupyterPathInfo.GetDataPaths(commandLineResult);
             if (string.IsNullOrEmpty(dataPathsResult.Error))
             {
                 Installkernel(dataPathsResult.Paths, console);
@@ -24,7 +24,7 @@ namespace MLS.Agent.Jupyter
             }
             else
             {
-                console.Error.WriteLine($".NET Kernel Installation failed with error: {dataPathsResult.Error}");
+                console.Error.WriteLine($".NET kernel installation failed with error: {dataPathsResult.Error}");
                 return -1;
             }
         }
@@ -36,24 +36,22 @@ namespace MLS.Agent.Jupyter
                 if (directory.Exists)
                 {
                     var kernelDirectory = directory.Subdirectory("kernels");
-                    if (!kernelDirectory.Exists)
+                    if (kernelDirectory.Exists)
                     {
-                        kernelDirectory.Create();
+                        var dotnetkernelDir = kernelDirectory.Subdirectory(".NET");
+                        if (!dotnetkernelDir.Exists)
+                        {
+                            dotnetkernelDir.Create();
+                        }
+
+                        console.Out.WriteLine($"Installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
+
+                        // Copy the files into the kernels directory
+                        File.Copy("kernels.json", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                        File.Copy("logo-32x32.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                        File.Copy("logo-64x64.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
+                        console.Out.WriteLine($"Finished installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
                     }
-
-                    var dotnetkernelDir = kernelDirectory.Subdirectory(".NET");
-                    if (!dotnetkernelDir.Exists)
-                    {
-                        dotnetkernelDir.Create();
-                    }
-
-                    console.Out.WriteLine($"Installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
-
-                    // Copy the files into the kernels directory
-                    File.Copy("kernels.json", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
-                    File.Copy("logo-32x32.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
-                    File.Copy("logo-64x64.png", Path.Combine(dotnetkernelDir.FullName, "kernels.json"));
-                    console.Out.WriteLine($"Finished installing the .NET kernel in directory: {dotnetkernelDir.FullName}");
                 }
             }
         }
