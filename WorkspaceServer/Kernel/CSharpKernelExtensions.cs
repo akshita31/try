@@ -66,7 +66,7 @@ using static {typeof(Microsoft.DotNet.Interactive.Kernel).FullName};
                         if (refs != null)
                         {
                             kernel.AddMetatadaReferences(refs);
-                            await pipelineContext.HandlingKernel.SendAsync(new LoadCSharpExtension(package, refs.Select(reference => new FileInfo(reference. Display))));
+                            await pipelineContext.HandlingKernel.SendAsync(new LoadCSharpExtension(package, refs.Select(reference => NuGetPackagePathResolver.GetNuGetPackageBasePath(new FileInfo(reference. Display), package))));
                         }
 
                         context.OnNext(new NuGetPackageAdded(package));
@@ -80,6 +80,20 @@ using static {typeof(Microsoft.DotNet.Interactive.Kernel).FullName};
             kernel.AddDirective(r);
 
             return kernel;
+        }
+    }
+
+    public class NuGetPackagePathResolver
+    {
+        public static DirectoryInfo GetNuGetPackageBasePath(FileInfo assemblyPath, NugetPackageReference nugetPackage)
+        {
+            var directory = assemblyPath.Directory;
+            while (directory != null && directory.Parent != null && directory.Parent.Name.ToLower().CompareTo(nugetPackage.PackageName.ToLower()) != 0)
+            {
+                directory = directory.Parent;
+            }
+
+            return directory;
         }
     }
 }
