@@ -3,6 +3,8 @@
 
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.DotNet.Interactive;
 using Microsoft.DotNet.Interactive.Commands;
@@ -64,6 +66,7 @@ using static {typeof(Microsoft.DotNet.Interactive.Kernel).FullName};
                         if (refs != null)
                         {
                             kernel.AddMetatadaReferences(refs);
+                            await pipelineContext.HandlingKernel.SendAsync(new LoadCSharpExtension(package, refs.Select(reference => new FileInfo(reference. Display))));
                         }
 
                         context.OnNext(new NuGetPackageAdded(package));
