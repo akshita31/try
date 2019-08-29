@@ -1,11 +1,16 @@
 ﻿// Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.DotNet.Interactive;
 using Microsoft.DotNet.Interactive.Commands;
 using Microsoft.DotNet.Interactive.Events;
@@ -66,7 +71,8 @@ using static {typeof(Microsoft.DotNet.Interactive.Kernel).FullName};
                         if (refs != null)
                         {
                             kernel.AddMetatadaReferences(refs);
-                            await pipelineContext.HandlingKernel.SendAsync(new LoadCSharpExtension(package, refs.Select(reference => NuGetPackagePathResolver.GetNuGetPackageBasePath(new FileInfo(reference. Display), package))));
+                            await pipelineContext.HandlingKernel.SendAsync(new LoadCSharpExtension(
+                                NuGetPackagePathResolver.GetNuGetPackageBasePath(package, refs.Select(reference => new FileInfo(reference.Display)))));
                         }
 
                         context.OnNext(new NuGetPackageAdded(package));
@@ -85,9 +91,10 @@ using static {typeof(Microsoft.DotNet.Interactive.Kernel).FullName};
 
     public class NuGetPackagePathResolver
     {
-        public static DirectoryInfo GetNuGetPackageBasePath(FileInfo assemblyPath, NugetPackageReference nugetPackage)
+        public static DirectoryInfo GetNuGetPackageBasePath(NugetPackageReference nugetPackage, IEnumerable<FileInfo> metadataReferences)
         {
-            var directory = assemblyPath.Directory;
+            var nugetPackageAssembly = metadataReferences.Single(file => string.Compare(Path.GetFileNameWithoutExtension(file.Name), nugetPackage.PackageName) ==0);
+            var directory = nugetPackageAssembly.Directory;
             while (directory != null && directory.Parent != null && directory.Parent.Name.ToLower().CompareTo(nugetPackage.PackageName.ToLower()) != 0)
             {
                 directory = directory.Parent;
